@@ -21,7 +21,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from AsyncStorage on app start
   useEffect(() => {
     const loadUser = async () => {
       try {
@@ -41,18 +40,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const signUp = async (email: string, password: string) => {
     try {
-      // Validate email format
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!emailRegex.test(email)) {
         return { error: "Please enter a valid email address" };
       }
 
-      // Validate password
       if (password.length < 6) {
         return { error: "Password must be at least 6 characters" };
       }
 
-      // Check if user already exists
       const existingUsers = await AsyncStorage.getItem("users");
       const users = existingUsers ? JSON.parse(existingUsers) : {};
 
@@ -60,16 +56,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         return { error: "An account with this email already exists" };
       }
 
-      // Create new user
       const newUser: User = {
         id: Date.now().toString(),
         email,
       };
 
-      // Hash password (simple approach - in production use proper bcrypt)
       users[email] = {
         id: newUser.id,
-        password: btoa(password), // Simple base64 encoding for demo
+        password: btoa(password),
       };
 
       await AsyncStorage.setItem("users", JSON.stringify(users));
