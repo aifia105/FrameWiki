@@ -88,7 +88,7 @@ function mapWarframe(raw: ApiWarframe): Warframe {
     shield: raw.shield ?? 0,
     armor: raw.armor ?? 0,
     power: raw.power ?? 0,
-    speed: toStringValue(raw.speed ?? raw.sprintSpeed ?? raw.sprint, "-") ,
+    speed: toStringValue(raw.speed ?? raw.sprintSpeed ?? raw.sprint, "-"),
     mr: toStringValue(raw.mr ?? raw.masteryReq, "0"),
     aura: raw.aura ?? "-",
     polarities: Array.isArray(raw.polarities) ? raw.polarities : [],

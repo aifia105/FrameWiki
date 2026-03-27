@@ -38,12 +38,17 @@ function WarframeCard({
       </View>
       <View className="flex-1 gap-1.5 p-3">
         <View className="flex-row items-center justify-between gap-1.5">
-          <Text className="flex-1 text-base font-bold tracking-tight text-stone-900" numberOfLines={1}>
+          <Text
+            className="flex-1 text-base font-bold tracking-tight text-stone-900"
+            numberOfLines={1}
+          >
             {item.name}
           </Text>
           {isPrime && (
             <View className="rounded-full bg-amber-100 px-2 py-0.5">
-              <Text className="text-[10px] font-bold tracking-wide text-amber-900">PRIME</Text>
+              <Text className="text-[10px] font-bold tracking-wide text-amber-900">
+                PRIME
+              </Text>
             </View>
           )}
         </View>
@@ -65,7 +70,9 @@ function Stat({ label, value }: { label: string; value: number }) {
   return (
     <View className="items-center">
       <Text className="text-sm font-bold text-stone-900">{value ?? "-"}</Text>
-      <Text className="text-[10px] font-semibold tracking-wide text-stone-400">{label}</Text>
+      <Text className="text-[10px] font-semibold tracking-wide text-stone-400">
+        {label}
+      </Text>
     </View>
   );
 }
@@ -134,7 +141,11 @@ export default function Page() {
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: 20, gap: 8, paddingBottom: 4 }}
+        contentContainerStyle={{
+          paddingHorizontal: 20,
+          gap: 8,
+          paddingBottom: 4,
+        }}
       >
         {FILTERS.map((f) => (
           <Pressable
@@ -146,7 +157,9 @@ export default function Page() {
                 : "border-stone-200 bg-stone-100"
             }`}
           >
-            <Text className={`text-xs font-semibold ${activeFilter === f ? "text-stone-50" : "text-stone-600"}`}>
+            <Text
+              className={`text-xs font-semibold ${activeFilter === f ? "text-stone-50" : "text-stone-600"}`}
+            >
               {f}
             </Text>
           </Pressable>
@@ -166,12 +179,16 @@ export default function Page() {
       {loading && (
         <View className="flex-1 items-center justify-center gap-3">
           <ActivityIndicator size="large" color="#1c1917" />
-          <Text className="text-sm font-medium text-stone-400">Loading Warframes...</Text>
+          <Text className="text-sm font-medium text-stone-400">
+            Loading Warframes...
+          </Text>
         </View>
       )}
       {error && (
         <View className="flex-1 items-center justify-center gap-2 px-6">
-          <Text className="text-center text-sm font-medium text-red-600">{error}</Text>
+          <Text className="text-center text-sm font-medium text-red-600">
+            {error}
+          </Text>
           <Text className="text-center text-xs text-stone-400">
             Check your connection and try again.
           </Text>
@@ -189,7 +206,9 @@ export default function Page() {
           ListEmptyComponent={
             <View className="items-center gap-3 pt-14">
               <Text className="text-3xl text-stone-300">◎</Text>
-              <Text className="text-sm font-medium text-stone-400">No Warframes found.</Text>
+              <Text className="text-sm font-medium text-stone-400">
+                No Warframes found.
+              </Text>
             </View>
           }
           renderItem={({ item }) => (
