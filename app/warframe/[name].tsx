@@ -1,3 +1,6 @@
+import { Row } from "@/components/warframe/row";
+import { Section } from "@/components/warframe/section";
+import { StatBlock } from "@/components/warframe/statBlock";
 import { useWarframe } from "@/hooks/use-warframes";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import React from "react";
@@ -5,58 +8,11 @@ import {
   ActivityIndicator,
   Image,
   Pressable,
-  SafeAreaView,
   ScrollView,
-  StyleSheet,
   Text,
   View,
 } from "react-native";
-
-function StatBlock({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number;
-}) {
-  return (
-    <View style={styles.statBlock}>
-      <Text style={styles.statBlockValue}>{value || "—"}</Text>
-      <Text style={styles.statBlockLabel}>{label}</Text>
-    </View>
-  );
-}
-
-function Section({
-  title,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      {children}
-    </View>
-  );
-}
-
-function Row({
-  label,
-  value,
-}: {
-  label: string;
-  value: string | number | boolean | undefined;
-}) {
-  if (value === undefined || value === null || value === "") return null;
-  return (
-    <View style={styles.row}>
-      <Text style={styles.rowLabel}>{label}</Text>
-      <Text style={styles.rowValue}>{String(value)}</Text>
-    </View>
-  );
-}
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function WarframePage() {
   const { name } = useLocalSearchParams<{ name: string }>();
@@ -66,68 +22,75 @@ export default function WarframePage() {
   const isPrime = frame?.name?.includes("Prime");
 
   return (
-    <SafeAreaView style={styles.safe}>
-      {/* Back button */}
-      <View style={styles.topBar}>
+    <SafeAreaView className="flex-1 bg-stone-50">
+      <View className="border-b border-stone-200 px-5 py-3">
         <Pressable
           onPress={() => router.back()}
-          style={({ pressed }) => [styles.backBtn, pressed && { opacity: 0.6 }]}
+          className="flex-row items-center gap-1.5 self-start"
+          style={({ pressed }) => (pressed ? { opacity: 0.6 } : undefined)}
         >
-          <Text style={styles.backArrow}>←</Text>
-          <Text style={styles.backText}>Warframes</Text>
+          <Text className="text-[30px] leading-[30px] text-stone-900">←</Text>
+          <Text className="text-[15px] font-semibold text-stone-900">
+            Warframes
+          </Text>
         </Pressable>
       </View>
 
       {loading && (
-        <View style={styles.center}>
+        <View className="flex-1 items-center justify-center gap-3">
           <ActivityIndicator size="large" color="#1c1917" />
-          <Text style={styles.loadingText}>Loading…</Text>
+          <Text className="text-sm text-stone-400">Loading...</Text>
         </View>
       )}
 
       {error && (
-        <View style={styles.center}>
-          <Text style={styles.errorText}>{error}</Text>
+        <View className="flex-1 items-center justify-center gap-3">
+          <Text className="text-sm text-red-600">{error}</Text>
         </View>
       )}
 
       {!loading && !error && frame && (
         <ScrollView
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scroll}
+          contentContainerStyle={{ paddingBottom: 48 }}
         >
-          {/* Hero */}
-          <View style={styles.hero}>
-            <View style={styles.heroImageWrap}>
+          <View className="flex-row items-start gap-4 bg-stone-900 p-5">
+            <View className="h-[150px] w-[120px] items-center justify-center rounded-xl bg-stone-800 p-2">
               <Image
                 source={{ uri: frame.thumbnail }}
-                style={styles.heroImage}
+                className="h-[134px] w-[104px]"
                 resizeMode="contain"
               />
             </View>
-            <View style={styles.heroInfo}>
-              <View style={styles.heroNameRow}>
-                <Text style={styles.heroName}>{frame.name}</Text>
+            <View className="flex-1 gap-1.5 pt-1">
+              <View className="flex-row flex-wrap items-center gap-2">
+                <Text className="text-2xl font-extrabold tracking-tight text-stone-50">
+                  {frame.name}
+                </Text>
                 {isPrime && (
-                  <View style={styles.primeBadge}>
-                    <Text style={styles.primeBadgeText}>PRIME</Text>
+                  <View className="rounded-full bg-amber-100 px-2 py-0.5">
+                    <Text className="text-[10px] font-bold tracking-wide text-amber-800">
+                      PRIME
+                    </Text>
                   </View>
                 )}
               </View>
               {frame.introduced?.name && (
-                <Text style={styles.heroSub}>
+                <Text className="text-xs font-semibold tracking-[0.3px] text-stone-500">
                   Update {frame.introduced.name}
                 </Text>
               )}
-              <Text style={styles.heroDesc} numberOfLines={4}>
+              <Text
+                className="mt-0.5 text-[13px] leading-5 text-stone-400"
+                numberOfLines={4}
+              >
                 {frame.description}
               </Text>
             </View>
           </View>
 
-          {/* Base stats grid */}
           <Section title="Base Stats">
-            <View style={styles.statsGrid}>
+            <View className="flex-row flex-wrap gap-2.5">
               <StatBlock label="Health" value={frame.health} />
               <StatBlock label="Shield" value={frame.shield} />
               <StatBlock label="Armor" value={frame.armor} />
@@ -137,11 +100,10 @@ export default function WarframePage() {
             </View>
           </Section>
 
-          {/* Prime stats — only if different */}
           {isPrime ||
           (frame.prime_health && frame.prime_health !== frame.health) ? (
             <Section title="Prime Stats">
-              <View style={styles.statsGrid}>
+              <View className="flex-row flex-wrap gap-2.5">
                 {frame.prime_health ? (
                   <StatBlock label="Health" value={frame.prime_health} />
                 ) : null}
@@ -164,9 +126,8 @@ export default function WarframePage() {
             </Section>
           ) : null}
 
-          {/* Details */}
           <Section title="Details">
-            <View style={styles.detailsCard}>
+            <View className="overflow-hidden rounded-2xl border border-stone-200 bg-white">
               <Row label="Aura" value={frame.aura} />
               {frame.prime_aura && frame.prime_aura !== frame.aura && (
                 <Row label="Prime Aura" value={frame.prime_aura} />
@@ -180,13 +141,17 @@ export default function WarframePage() {
             </View>
           </Section>
 
-          {/* Polarities */}
           {frame.polarities?.length > 0 && (
             <Section title="Polarities">
-              <View style={styles.polaritiesRow}>
+              <View className="flex-row flex-wrap gap-2">
                 {frame.polarities.map((p, i) => (
-                  <View key={i} style={styles.polarityPill}>
-                    <Text style={styles.polarityText}>{p}</Text>
+                  <View
+                    key={`${p}-${i}`}
+                    className="rounded-full border border-stone-200 bg-white px-3.5 py-1.5"
+                  >
+                    <Text className="text-[13px] font-semibold text-stone-700">
+                      {p}
+                    </Text>
                   </View>
                 ))}
               </View>
@@ -197,157 +162,3 @@ export default function WarframePage() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: "#fafaf9" },
-
-  topBar: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#e7e5e4",
-  },
-  backBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
-    alignSelf: "flex-start",
-  },
-  backArrow: { fontSize: 20, color: "#1c1917", lineHeight: 22 },
-  backText: { fontSize: 15, fontWeight: "600", color: "#1c1917" },
-
-  center: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
-  loadingText: { fontSize: 14, color: "#a8a29e" },
-  errorText: { fontSize: 14, color: "#dc2626" },
-
-  scroll: { paddingBottom: 48 },
-
-  // Hero
-  hero: {
-    backgroundColor: "#1c1917",
-    flexDirection: "row",
-    padding: 20,
-    gap: 16,
-    alignItems: "flex-start",
-  },
-  heroImageWrap: {
-    width: 120,
-    height: 150,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "#292524",
-    borderRadius: 12,
-    padding: 8,
-  },
-  heroImage: { width: 104, height: 134 },
-  heroInfo: { flex: 1, gap: 6, paddingTop: 4 },
-  heroNameRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-    flexWrap: "wrap",
-  },
-  heroName: {
-    fontSize: 24,
-    fontWeight: "800",
-    color: "#fafaf9",
-    letterSpacing: -0.5,
-  },
-  heroSub: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#78716c",
-    letterSpacing: 0.3,
-  },
-  heroDesc: { fontSize: 13, lineHeight: 19, color: "#a8a29e", marginTop: 2 },
-  primeBadge: {
-    backgroundColor: "#fef3c7",
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 20,
-  },
-  primeBadgeText: {
-    fontSize: 10,
-    fontWeight: "700",
-    color: "#92400e",
-    letterSpacing: 0.5,
-  },
-
-  // Section
-  section: { paddingHorizontal: 20, paddingTop: 24, gap: 12 },
-  sectionTitle: {
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 1.2,
-    textTransform: "uppercase",
-    color: "#a8a29e",
-  },
-
-  // Stats grid
-  statsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-  },
-  statBlock: {
-    width: "30%",
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#e7e5e4",
-    padding: 12,
-    alignItems: "center",
-    gap: 2,
-  },
-  statBlockValue: {
-    fontSize: 20,
-    fontWeight: "800",
-    color: "#1c1917",
-    letterSpacing: -0.5,
-  },
-  statBlockLabel: {
-    fontSize: 11,
-    fontWeight: "600",
-    color: "#a8a29e",
-    letterSpacing: 0.4,
-    textTransform: "uppercase",
-  },
-
-  // Details card
-  detailsCard: {
-    backgroundColor: "#fff",
-    borderRadius: 14,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#e7e5e4",
-    overflow: "hidden",
-  },
-  row: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 14,
-    paddingVertical: 11,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#f5f5f4",
-  },
-  rowLabel: { fontSize: 14, color: "#78716c", fontWeight: "500" },
-  rowValue: {
-    fontSize: 14,
-    color: "#1c1917",
-    fontWeight: "600",
-    maxWidth: "60%",
-    textAlign: "right",
-  },
-
-  // Polarities
-  polaritiesRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  polarityPill: {
-    paddingHorizontal: 14,
-    paddingVertical: 7,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    borderWidth: StyleSheet.hairlineWidth,
-    borderColor: "#e7e5e4",
-  },
-  polarityText: { fontSize: 13, fontWeight: "600", color: "#44403c" },
-});
